@@ -2,149 +2,485 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Subir y Descargar Archivos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EMERGENCIAS CANARIAS PD</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
   <style>
-    /* Reset básico */
+    /* Reset y base */
     * {
       box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0b1a38; /* Azul marino oscuro */
+      color: #fff;
       margin: 0;
       padding: 0;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    body {
-      background-color: #fff;
-      color: #b00000; /* rojo oscuro */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
     }
-
-    h1, h2 {
+    header {
+      width: 100%;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      background-color: transparent;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      user-select: none;
+      border-bottom: 1px solid #223355;
+    }
+    main {
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    /* Inputs y botones */
+    input, textarea {
+      background-color: transparent;
+      border: 1px solid #5577bb;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      font-size: 1rem;
+      width: 100%;
+      transition: border-color 0.3s;
+      resize: none;
+    }
+    input::placeholder,
+    textarea::placeholder {
+      color: #aac4ffaa;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #90b5ff;
+      box-shadow: 0 0 6px #90b5ff66;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    button {
+      background-color: #2a4d8f;
+      border: none;
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+    button:hover, button:focus {
+      background-color: #4873c8;
+      outline: none;
+    }
+    button:active {
+      background-color: #1f3a6e;
+    }
+    /* Botones secundarios */
+    button#register-btn {
+      background-color: #1f3a6e;
+    }
+    button#register-btn:hover {
+      background-color: #3561a3;
+    }
+    button#logout-btn {
+      background-color: #a83232;
+      margin-bottom: 1rem;
+      width: fit-content;
+      align-self: flex-end;
+      padding: 0.5rem 1rem;
+    }
+    button#logout-btn:hover {
+      background-color: #d14444;
+    }
+    /* Secciones */
+    section {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px #00000033;
+    }
+    h2, h3 {
+      margin-top: 0;
       margin-bottom: 1rem;
       font-weight: 700;
+      letter-spacing: 1px;
     }
-
-    form {
-      background-color: #b00000; /* rojo */
-      padding: 1.5rem 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(176, 0, 0, 0.3);
+    /* Nav */
+    nav {
       display: flex;
-      align-items: center;
+      justify-content: center;
       gap: 1rem;
-      margin-bottom: 2rem;
-      width: 100%;
-      max-width: 450px;
+      margin-bottom: 1rem;
     }
-
-    input[type="file"] {
+    nav button {
       flex-grow: 1;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    button {
-      background-color: #fff;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      font-weight: 600;
-      color: #b00000;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #ff4d4d;
-      color: #fff;
-    }
-
-    ul {
-      list-style: none;
-      width: 100%;
-      max-width: 450px;
-    }
-
-    ul li {
-      background-color: #f9f9f9;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.6rem;
+      font-weight: 700;
+      background-color: transparent;
+      border: 2px solid #5577bb;
+      color: #aac4ff;
       border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(176, 0, 0, 0.1);
+      transition: background-color 0.3s, color 0.3s;
     }
-
-    ul li a {
-      color: #b00000;
+    nav button.active {
+      background-color: #5577bb;
+      color: #fff;
+      border-color: #5577bb;
+      cursor: default;
+    }
+    nav button:hover:not(.active) {
+      background-color: #4466aa22;
+      color: #d1e0ff;
+    }
+    /* Listado archivos */
+    ul.file-list {
+      list-style: none;
+      padding-left: 0;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    ul.file-list li a {
+      color: #90b5ff;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
+      display: inline-block;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+      word-break: break-word;
     }
-
-    ul li a:hover {
-      color: #ff4d4d;
-      text-decoration: underline;
+    ul.file-list li a:hover {
+      border-bottom: 1px solid #90b5ff;
     }
-
-    @media (max-width: 500px) {
-      form, ul {
-        max-width: 100%;
-      }
+    /* Mensajes foro */
+    #messages {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+    }
+    .message {
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid #223355;
+    }
+    .message strong {
+      color: #aac4ff;
+    }
+    /* Mensajes de error o status */
+    #auth-message, #upload-status {
+      margin-top: 0.8rem;
+      color: #ff6b6b;
+      min-height: 1.2em;
     }
   </style>
 </head>
 <body>
-  <h1>Subir archivo</h1>
-  <form id="uploadForm">
-    <input type="file" name="file" id="fileInput" required />
-    <button type="submit">Subir</button>
-  </form>
 
-  <h2>Archivos disponibles</h2>
-  <ul id="fileList"></ul>
+<header>
+  EMERGENCIAS CANARIAS PD
+</header>
 
-  <script>
-    const uploadForm = document.getElementById('uploadForm');
-    const fileList = document.getElementById('fileList');
+<main>
+  <!-- Login / Register -->
+  <section id="auth-section">
+    <h2>Iniciar Sesión o Registrarse</h2>
+    <input type="email" id="email" placeholder="Email" autocomplete="username" />
+    <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" />
+    <button id="login-btn">Iniciar Sesión</button>
+    <button id="register-btn">Registrarse</button>
+    <p id="auth-message" aria-live="polite"></p>
+  </section>
 
-    uploadForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fileInput = document.getElementById('fileInput');
-      const formData = new FormData();
-      formData.append('file', fileInput.files[0]);
+  <!-- Menú y contenido -->
+  <section id="menu-section" style="display:none;">
+    <nav role="tablist" aria-label="Menú principal">
+      <button id="upload-tab" class="active" role="tab" aria-selected="true" aria-controls="upload-section" tabindex="0">Subir Archivos</button>
+      <button id="download-tab" role="tab" aria-selected="false" aria-controls="download-section" tabindex="-1">Descargar Archivos</button>
+      <button id="forum-tab" role="tab" aria-selected="false" aria-controls="forum-section" tabindex="-1">Foro</button>
+    </nav>
 
-      const res = await fetch('/upload', {
-        method: 'POST',
-        body: formData
-      });
+    <button id="logout-btn">Cerrar Sesión</button>
 
-      if (res.ok) {
-        alert('Archivo subido con éxito');
-        fileInput.value = ''; // limpiar input
-        loadFiles();
-      } else {
-        alert('Error al subir archivo');
-      }
-    });
+    <section id="upload-section" role="tabpanel" tabindex="0" aria-labelledby="upload-tab">
+      <h3>Subir Archivo</h3>
+      <input type="file" id="file-input" />
+      <button id="upload-file-btn">Subir</button>
+      <p id="upload-status" aria-live="polite"></p>
+    </section>
 
-    async function loadFiles() {
-      const res = await fetch('/files');
-      const files = await res.json();
-      fileList.innerHTML = '';
-      files.forEach(file => {
-        const li = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = `/download/${encodeURIComponent(file)}`;
-        link.textContent = file;
-        li.appendChild(link);
-        fileList.appendChild(li);
-      });
+    <section id="download-section" role="tabpanel" tabindex="0" aria-labelledby="download-tab" style="display:none;">
+      <h3>Archivos Disponibles</h3>
+      <ul id="file-list" class="file-list" role="list"></ul>
+    </section>
+
+    <section id="forum-section" role="tabpanel" tabindex="0" aria-labelledby="forum-tab" style="display:none;">
+      <h3>Foro Común</h3>
+      <div id="messages" aria-live="polite" aria-relevant="additions"></div>
+      <textarea id="message-input" placeholder="Escribe un mensaje..." rows="3"></textarea>
+      <button id="send-message-btn">Enviar</button>
+    </section>
+  </section>
+</main>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Tu configuración Firebase aquí (reemplaza con la tuya)
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const storage = firebase.storage();
+  const db = firebase.firestore();
+
+  // Elementos DOM
+  const authSection = document.getElementById('auth-section');
+  const menuSection = document.getElementById('menu-section');
+  const loginBtn = document.getElementById('login-btn');
+  const registerBtn = document.getElementById('register-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const authMessage = document.getElementById('auth-message');
+
+  // Menú Tabs
+  const uploadTab = document.getElementById('upload-tab');
+  const downloadTab = document.getElementById('download-tab');
+  const forumTab = document.getElementById('forum-tab');
+
+  const uploadSection = document.getElementById('upload-section');
+  const downloadSection = document.getElementById('download-section');
+  const forumSection = document.getElementById('forum-section');
+
+  // Upload
+  const fileInput = document.getElementById('file-input');
+  const uploadFileBtn = document.getElementById('upload-file-btn');
+  const uploadStatus = document.getElementById('upload-status');
+
+  // Download
+  const fileList = document.getElementById('file-list');
+
+  // Forum
+  const messagesDiv = document.getElementById('messages');
+  const messageInput = document.getElementById('message-input');
+  const sendMessageBtn = document.getElementById('send-message-btn');
+
+  // Control de visibilidad de tabs y accesibilidad
+  function showTab(tab) {
+    uploadTab.classList.remove('active');
+    downloadTab.classList.remove('active');
+    forumTab.classList.remove('active');
+    uploadTab.setAttribute('aria-selected', 'false');
+    downloadTab.setAttribute('aria-selected', 'false');
+    forumTab.setAttribute('aria-selected', 'false');
+    uploadTab.tabIndex = -1;
+    downloadTab.tabIndex = -1;
+    forumTab.tabIndex = -1;
+
+    uploadSection.style.display = 'none';
+    downloadSection.style.display = 'none';
+    forumSection.style.display = 'none';
+
+    if(tab === 'upload') {
+      uploadTab.classList.add('active');
+      uploadTab.setAttribute('aria-selected', 'true');
+      uploadTab.tabIndex = 0;
+      uploadSection.style.display = 'block';
+      uploadSection.focus();
+    } else if(tab === 'download') {
+      downloadTab.classList.add('active');
+      downloadTab.setAttribute('aria-selected', 'true');
+      downloadTab.tabIndex = 0;
+      downloadSection.style.display = 'block';
+      downloadSection.focus();
+      loadFiles();
+    } else if(tab === 'forum') {
+      forumTab.classList.add('active');
+      forumTab.setAttribute('aria-selected', 'true');
+      forumTab.tabIndex = 0;
+      forumSection.style.display = 'block';
+      forumSection.focus();
+      loadMessages();
     }
+  }
 
-    loadFiles();
-  </script>
+  uploadTab.addEventListener('click', () => showTab('upload'));
+  downloadTab.addEventListener('click', () => showTab('download'));
+  forumTab.addEventListener('click', () => showTab('forum'));
+
+  // Login
+  loginBtn.addEventListener('click', () => {
+    const email = emailInput.value.trim();
+    const pass = passwordInput.value;
+    authMessage.textContent = '';
+    if(!email || !pass){
+      authMessage.textContent = 'Por favor, completa ambos campos.';
+      return;
+    }
+    auth.signInWithEmailAndPassword(email, pass)
+      .catch(e => {
+        authMessage.textContent = e.message;
+      });
+  });
+
+  // Register
+  registerBtn.addEventListener('click', () => {
+    const email = emailInput.value.trim();
+    const pass = passwordInput.value;
+    authMessage.textContent = '';
+    if(!email || !pass){
+      authMessage.textContent = 'Por favor, completa ambos campos.';
+      return;
+    }
+    auth.createUserWithEmailAndPassword(email, pass)
+      .catch(e => {
+        authMessage.textContent = e.message;
+      });
+  });
+
+  // Logout
+  logoutBtn.addEventListener('click', () => {
+    auth.signOut();
+  });
+
+  // Estado de autenticación
+  auth.onAuthStateChanged(user => {
+    if(user) {
+      authSection.style.display = 'none';
+      menuSection.style.display = 'flex';
+      showTab('upload');
+      authMessage.textContent = '';
+    } else {
+      authSection.style.display = 'block';
+      menuSection.style.display = 'none';
+      emailInput.value = '';
+      passwordInput.value = '';
+      authMessage.textContent = '';
+      messagesDiv.innerHTML = '';
+      fileList.innerHTML = '';
+      uploadStatus.textContent = '';
+    }
+  });
+
+  // Subir archivo
+  uploadFileBtn.addEventListener('click', () => {
+    const file = fileInput.files[0];
+    uploadStatus.style.color = '#ff6b6b';
+    if(!file) {
+      uploadStatus.textContent = 'Selecciona un archivo primero.';
+      return;
+    }
+    const storageRef = storage.ref('uploads/' + file.name);
+    const uploadTask = storageRef.put(file);
+
+    uploadStatus.style.color = '#aac4ff';
+    uploadStatus.textContent = 'Subiendo...';
+
+    uploadTask.on('state_changed', 
+      (snapshot) => {}, 
+      (error) => {
+        uploadStatus.style.color = '#ff6b6b';
+        uploadStatus.textContent = 'Error al subir: ' + error.message;
+      }, 
+      () => {
+        uploadStatus.style.color = '#a3fca3';
+        uploadStatus.textContent = 'Archivo subido con éxito.';
+        fileInput.value = '';
+      });
+  });
+
+  // Listar archivos para descargar
+  function loadFiles() {
+    fileList.innerHTML = 'Cargando archivos...';
+    storage.ref('uploads').listAll()
+      .then(result => {
+        fileList.innerHTML = '';
+        if(result.items.length === 0) {
+          fileList.textContent = 'No hay archivos disponibles.';
+          return;
+        }
+        result.items.forEach(itemRef => {
+          itemRef.getDownloadURL().then(url => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = itemRef.name;
+            li.appendChild(a);
+            fileList.appendChild(li);
+          });
+        });
+      })
+      .catch(e => {
+        fileList.textContent = 'Error al cargar archivos: ' + e.message;
+      });
+  }
+
+  // Foro: cargar mensajes en tiempo real
+  function loadMessages() {
+    messagesDiv.innerHTML = 'Cargando mensajes...';
+
+    db.collection('messages')
+      .orderBy('timestamp', 'asc')
+      .onSnapshot(snapshot => {
+        messagesDiv.innerHTML = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement('div');
+          div.classList.add('message');
+          div.innerHTML = `<strong>${escapeHtml(data.email)}</strong>: ${escapeHtml(data.text)}`;
+          messagesDiv.appendChild(div);
+          messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+      }, err => {
+        messagesDiv.textContent = 'Error al cargar mensajes: ' + err.message;
+      });
+  }
+
+  // Enviar mensaje
+  sendMessageBtn.addEventListener('click', () => {
+    const user = auth.currentUser;
+    const text = messageInput.value.trim();
+    if(!user || !text) return;
+    db.collection('messages').add({
+      email: user.email,
+      text,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      messageInput.value = '';
+    })
+    .catch(e => {
+      alert('Error al enviar mensaje: ' + e.message);
+    });
+  });
+
+  // Función para escapar texto y evitar XSS
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>
+
 </body>
 </html>
