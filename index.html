@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Subir y Descargar Archivos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: #fff;
+      color: #b00000; /* rojo oscuro */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    form {
+      background-color: #b00000; /* rojo */
+      padding: 1.5rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(176, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    input[type="file"] {
+      flex-grow: 1;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      color: #b00000;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ff4d4d;
+      color: #fff;
+    }
+
+    ul {
+      list-style: none;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    ul li {
+      background-color: #f9f9f9;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.6rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(176, 0, 0, 0.1);
+    }
+
+    ul li a {
+      color: #b00000;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    ul li a:hover {
+      color: #ff4d4d;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 500px) {
+      form, ul {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Subir archivo</h1>
+  <form id="uploadForm">
+    <input type="file" name="file" id="fileInput" required />
+    <button type="submit">Subir</button>
+  </form>
+
+  <h2>Archivos disponibles</h2>
+  <ul id="fileList"></ul>
+
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const fileList = document.getElementById('fileList');
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('fileInput');
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      const res = await fetch('/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (res.ok) {
+        alert('Archivo subido con éxito');
+        fileInput.value = ''; // limpiar input
+        loadFiles();
+      } else {
+        alert('Error al subir archivo');
+      }
+    });
+
+    async function loadFiles() {
+      const res = await fetch('/files');
+      const files = await res.json();
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `/download/${encodeURIComponent(file)}`;
+        link.textContent = file;
+        li.appendChild(link);
+        fileList.appendChild(li);
+      });
+    }
+
+    loadFiles();
+  </script>
+</body>
+</html>
